@@ -23,7 +23,6 @@ app = FastAPI()
 load_dotenv()
 DATABASE_URL = os.environ["DATABASE_URL"]
 APP_PASSWORD = os.environ["APP_PASSWORD"]
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 SMTP_HOST = "smtp.gmail.com"
