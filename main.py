@@ -9,11 +9,8 @@ from dotenv import load_dotenv
 import os
 import psycopg2 as p
 import uuid
-import smtplib
 import html
 import secrets
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import secrets
 import time
 import requests
