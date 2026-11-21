@@ -16,6 +16,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import secrets
 import time
+import requests
 
 app = FastAPI()
 
@@ -37,15 +38,18 @@ def send_smtp_otp(to_email: str, session_id):
     z[session_id]["code"] = code
     z[session_id]["expires_at"] = time.time() + 300   # 5 minutes
     z[session_id]["attempts"] = 0
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Your Sync Code: {code}"
-    msg["From"] = SENDER_EMAIL
-    msg["To"] = to_email
-    msg.attach(MIMEText(f"<p>Your verification code is: <b>{code}</b></p>", "html"))
-    with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-        server.starttls()
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.sendmail(SENDER_EMAIL, to_email, msg.as_string())
+    r = requests.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers={"api-key": os.environ["BREVO_API_KEY"], "content-type": "application/json"},
+        json={
+            "sender": {"email": SENDER_EMAIL},
+            "to": [{"email": to_email}],
+            "subject": f"Your Sync Code: {code}",
+            "htmlContent": f"<p>Your verification code is: <b>{code}</b></p>",
+        },
+        timeout=10,
+    )   
+    print("brevo:", r.status_code, r.text)
 
 templates = Jinja2Templates(directory="templates")
 
