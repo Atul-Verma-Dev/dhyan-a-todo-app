@@ -197,12 +197,11 @@ def rec_code_from_js(otp: otp_js, request: Request, response: Response):
 
 
 @app.get("/api/verified")
-async def verif(request:Request,response:Response):
-    x = get_or_set_session_id(request,response)
+async def verif(request: Request, response: Response):
+    x = get_or_set_session_id(request, response)
     if z.get(x).get("verification_status") == "Verified":
-        return{"Status":"Verified"}
-    elif z.get(x).get("verification_status") == "Unverified":
-        return{"Status":"Not Verified"}
+        return {"Status": "Verified"}
+    return {"Status": "Not Verified"}
 # class person(BaseModel):
 #     main_type:str
 #     title:str
